@@ -1,6 +1,6 @@
 import * as assert from 'node:assert/strict';
 
-import { str, name , description } from '../dist/index.js'
+import { str, name , description, Flags, choice, identity } from '../dist/index.js'
 
 
 
@@ -32,6 +32,66 @@ assert.deepEqual(
     }
 )
 
+assert.deepEqual(
+    str(
+        name("option"),
+        description("option"),
+        {},
+        Flags.Nsfw | Flags.Required
+    ),
+    {
+        type: 3,
+        name: "option",
+        description: "option",
+        nsfw: true,
+        required: true
+    }
+)
+assert.deepEqual(
+    choice(
+      str(
+        name("option"),
+        description("option"),
+        {},
+        Flags.Nsfw | Flags.Required
+      ),
+      [identity("option1"), identity("option2")]
+    ),
+    {
+        type: 3,
+        name: "option",
+        description: "option",
+        nsfw: true,
+        required: true,
+        choice: [
+            { name: "option1", value: "option1" },
+            { name: "option2", value: "option2" }
+        ]
+    }
+);
+assert.deepEqual(
+    choice(
+      str(
+        name("option"),
+        description("option"),
+        {},
+        Flags.Nsfw | Flags.Required
+      ),
+      [identity("option1"), identity("option2")]
+    ),
+    {
+        type: 3,
+        name: "option",
+        description: "option",
+        nsfw: true,
+        required: true,
+        choice: [
+            { name: "option1", value: "option1" },
+            { name: "option2", value: "option2" }
+        ]
+    }
+);
+
 assert.throws(
     () => str(
         name("bad option name"),
@@ -45,5 +105,6 @@ assert.throws(
         description()
     )
 )
+
 
 console.log("OK")

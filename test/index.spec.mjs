@@ -96,14 +96,16 @@ assert.throws(
     () => str(
         name("bad option name"),
         description("shid")
-    )
+    ),
+    "name fails regex"
 )
 
 assert.throws(
     () => str(
         name("bad option name"),
         description()
-    )
+    ),  
+    "No description"
 )
 
 

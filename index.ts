@@ -167,16 +167,45 @@ export function subcommand(
     options: BaseOption[],
     flags: Flags
 ) {
-    assert.ok(flags & Flags.Autocomplete, "Cannot have autocomplete flag on subcommand");
-    return baseOption(
+   assert.ok(!(flags & (Flags.Autocomplete | Flags.Required)), "Cannot have autocomplete or required flag on subcommand");
+   return baseOption(
         ApplicationCommandOptionType.Subcommand,
+        name,
+        description,
+        flags,
+        { options }
+    ) as BaseOption & { type: ApplicationCommandOptionType.Subcommand };
+}
+
+export function subcommandgroup(
+    name: Name,
+    description: Description<ApplicationCommandOptionType.Subcommand>,
+    options: (BaseOption & { type: ApplicationCommandOptionType.Subcommand })[],
+    flags: Flags
+) {
+    assert.ok(!(flags & (Flags.Autocomplete | Flags.Required)), "Cannot have autocomplete or required flag on subcommandgroup");
+    assert.ok(options.every(t => t.type === ApplicationCommandOptionType.Subcommand))
+    return baseOption(
+        ApplicationCommandOptionType.SubcommandGroup,
         name,
         description,
         flags,
         { options }
     );
 }
+// for sern only
+export function autocomplete<T>(b: BaseOption, cb: (args: T) => PromiseLike<unknown> | unknown ) {
+    if(!b.autocomplete) {
+       b.autocomplete = true    
+    }
+    return {
+        ...b,
+        command: {
+            onEvent: [],
+            execute: cb
+        }
+    }
 
+}
 
-
-export { Choice, NoValidator };
+export { Choice, NoValidator, ApplicationCommandOptionType, BaseOption };

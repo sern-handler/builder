@@ -1,6 +1,6 @@
 import * as assert from 'node:assert/strict';
 
-import { str, name , description, Flags, choice, identity } from '../dist/index.js'
+import { str, name , description, Flags, choice, identity, subcommand, ApplicationCommandOptionType, subcommandgroup } from '../dist/index.js'
 
 
 
@@ -108,5 +108,58 @@ assert.throws(
     "No description"
 )
 
+assert.deepStrictEqual(
+   subcommand(
+    name("eat"),
+    description("eat cheese"),
+    [
+      str( name("gouda"), description("smoked gouda")),
+      str( name("parmesan"), description("yummy parm"))
+    ],
+   ),
+   {
+    type: ApplicationCommandOptionType.Subcommand,
+    name: "eat",
+    description: "eat cheese",
+    options: [
+     { name: "gouda", description: "smoked gouda", type: 3 },
+     { name: "parmesan", description: "yummy parm", type: 3 },
+    ]
+   }
 
+)
+
+assert.deepStrictEqual(
+   subcommandgroup(
+    name("eat"),
+    description("eat cheese"),
+    [
+      subcommand(
+        name("eat"),
+        description("eat cheese"),
+        [
+           str( name("gouda"), description("smoked gouda")),
+           str( name("parmesan"), description("yummy parm"))
+        ]
+      ),
+    ],
+   ),
+   {
+    type: ApplicationCommandOptionType.SubcommandGroup,
+    name: "eat",
+    description: "eat cheese",
+    options: [
+     { 
+        name: "eat",
+        description: "eat cheese",
+        type: ApplicationCommandOptionType.Subcommand,
+        options: [
+            str( name("gouda"), description("smoked gouda")),
+            str( name("parmesan"), description("yummy parm"))
+        ]
+     }
+    ]
+   }
+
+)
 console.log("OK")

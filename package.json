@@ -5,18 +5,23 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "scripts": {
-    "bundle": "microbundle"
+    "bundle": "microbundle --target node", 
+    "watch": "microbundle watch"
   },
   "exports": {
     "types": "./dist/index.d.ts",
     "require": "./dist/index.js",
     "default": "./dist/index.modern.mjs"
   },
+  "dependencies": {
+    "discord-api-types": "latest"
+  },
   "devDependencies": {
     "@types/node": "^20.1.0",
     "microbundle": "^0.15.1",
-    "typescript": "^5.0.4",
-    "discord-api-types": "latest"
+    "typescript": "^5.0.4"
+  },
+  "peerDependencies": {
   },
   "keywords": [],
   "author": "",

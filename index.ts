@@ -1,5 +1,6 @@
 import * as assert from 'node:assert';
-import { ApplicationCommandOptionType, BaseOption, Choice, Choiceable, Description, Name, NoValidator, Validators } from './types';
+import { BaseOption, Choice, Choiceable, Description, Name, NoValidator, Validators, Subcommand, SubcommandGroup } from './types';
+import { ApplicationCommandOptionType } from 'discord-api-types/v10'
 
 export enum Flags {
     None = 0,
@@ -164,8 +165,8 @@ export function description<T extends ApplicationCommandOptionType>(args: string
 export function subcommand(
     name: Name,
     description: Description<ApplicationCommandOptionType.Subcommand>,
-    options: BaseOption[],
-    flags: Flags
+    options: BaseOption[] = [],
+    flags: Flags = Flags.None
 ) {
    assert.ok(!(flags & (Flags.Autocomplete | Flags.Required)), "Cannot have autocomplete or required flag on subcommand");
    return baseOption(
@@ -174,14 +175,14 @@ export function subcommand(
         description,
         flags,
         { options }
-    ) as BaseOption & { type: ApplicationCommandOptionType.Subcommand };
+    ) as Subcommand;
 }
 
 export function subcommandgroup(
     name: Name,
     description: Description<ApplicationCommandOptionType.Subcommand>,
     options: (BaseOption & { type: ApplicationCommandOptionType.Subcommand })[],
-    flags: Flags
+    flags: Flags = Flags.None
 ) {
     assert.ok(!(flags & (Flags.Autocomplete | Flags.Required)), "Cannot have autocomplete or required flag on subcommandgroup");
     assert.ok(options.every(t => t.type === ApplicationCommandOptionType.Subcommand))
@@ -191,7 +192,7 @@ export function subcommandgroup(
         description,
         flags,
         { options }
-    );
+    ) as SubcommandGroup;
 }
 // for sern only
 export function autocomplete<T>(b: BaseOption, cb: (args: T) => PromiseLike<unknown> | unknown ) {
@@ -208,4 +209,4 @@ export function autocomplete<T>(b: BaseOption, cb: (args: T) => PromiseLike<unkn
 
 }
 
-export { Choice, NoValidator, ApplicationCommandOptionType, BaseOption };
+export { Choice, NoValidator, BaseOption, SubcommandGroup, Subcommand };

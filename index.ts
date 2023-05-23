@@ -39,7 +39,9 @@ function mapFlags(flags: Flags): Record<string,unknown> {
 
     return output;
 }
-
+/**
+  * declare range for number option
+  */
 export function range<T extends 
     ApplicationCommandOptionType.Number 
     | ApplicationCommandOptionType.Integer
@@ -232,7 +234,10 @@ export function subcommandgroup(
         { options }
     ) as BranchNode<ApplicationCommandOptionType.SubcommandGroup>;
 }
-// for sern only
+/* 
+ * For sern/handler usage only- sern/handler handles autocomplete in options structures
+ * For pure Discord API, enable the Autocomplete flag on the option
+ */
 export function autocomplete<T>(b: BaseOption<ApplicationCommandOptionType>, cb: (args: T) => PromiseLike<unknown> | unknown ) {
     if(!b.autocomplete) {
        b.autocomplete = true    

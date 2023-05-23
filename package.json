@@ -1,5 +1,5 @@
 {
-  "name": "@sern/option",
+  "name": "@sern/builder",
   "version": "1.0.0",
   "description": "Type safe options builder for the discord api",
   "main": "./dist/index.js",

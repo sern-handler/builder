@@ -64,7 +64,7 @@ export function str<T extends ApplicationCommandOptionType.String>(
 export function num<T extends ApplicationCommandOptionType.Number>(
     name: Name,
     description: Description<T>,
-    validators: { validate: Validators[T] },
+    validators: { validate: Validators[T] } = NoValidator,
     flags: Flags = Flags.None,
 ) {
     return baseOption(
@@ -79,7 +79,7 @@ export function num<T extends ApplicationCommandOptionType.Number>(
 export function attachment(
     name: Name,
     description: Description<ApplicationCommandOptionType.Attachment>,
-    flags: Flags
+    flags: Flags= Flags.None
 )
  {
     return baseOption(
@@ -94,8 +94,8 @@ export function attachment(
 export function int(
     name: Name,
     description: Description<ApplicationCommandOptionType.Integer>,
-    validators: { validate: Validators[ApplicationCommandOptionType.Number] },
-    flags: Flags
+    validators: { validate: Validators[ApplicationCommandOptionType.Number] } = NoValidator,
+    flags: Flags= Flags.None
 
 ) {
     return baseOption(
@@ -110,7 +110,7 @@ export function int(
 export function user(
     name: Name,
     description: Description<ApplicationCommandOptionType.User>,
-    flags: Flags
+    flags: Flags= Flags.None
 
 ) {
     return baseOption(
@@ -124,7 +124,7 @@ export function user(
 export function channel(
     name: Name,
     description: Description<ApplicationCommandOptionType.Channel>,
-    flags: Flags
+    flags: Flags= Flags.None
 
 ) {
     return baseOption(
@@ -137,7 +137,7 @@ export function channel(
 export function mentionable(
     name: Name,
     description: Description<ApplicationCommandOptionType.Mentionable>,
-    flags: Flags
+    flags: Flags= Flags.None
 
 ) {
     return baseOption(
@@ -204,7 +204,6 @@ export function autocomplete<T>(b: BaseOption<ApplicationCommandOptionType>, cb:
             execute: cb
         }
     }
-
 }
 
 export { Choice, NoValidator, BaseOption };

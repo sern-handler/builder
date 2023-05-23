@@ -1,7 +1,7 @@
 {
-  "name": "options",
+  "name": "@sern/option",
   "version": "1.0.0",
-  "description": "",
+  "description": "Type safe options builder for the discord api",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "scripts": {

@@ -2,6 +2,20 @@ import * as assert from 'node:assert';
 import { BaseOption, BranchNode, Choice, Choiceable, Description, Name, NoValidator, Validators } from './types';
 import { ApplicationCommandOptionType } from 'discord-api-types/v10'
 
+/*
+ * placeholder type for ranges
+ * @example 
+ * ```ts 
+ * str(
+ *   name('example'),
+ *   description('example'),
+ *   length(_, 10), //no min, max length of 10
+ *   Flags.Required
+ * )
+ *
+ * ```
+ */
+export const _ = NaN;
 export enum Flags {
     None = 0,
     Required = 1 << 0,
@@ -26,7 +40,30 @@ function mapFlags(flags: Flags): Record<string,unknown> {
     return output;
 }
 
+export function range<T extends 
+    ApplicationCommandOptionType.Number 
+    | ApplicationCommandOptionType.Integer
+>(min?: number, max?: number): Validators[T] {
+    return { 
+        min_value: Number.isNaN(min) ? undefined : min,
+        max_value: Number.isNaN(max) ? undefined : max
+    } as Validators[T];
+}
 
+export function length<T extends ApplicationCommandOptionType.String>(min?: number, max?: number): Validators[T] {
+    const base = { 
+        min_length: Number.isNaN(min) ? undefined : min,
+        max_length: Number.isNaN(max) ? undefined : max
+    } as Validators[T];
+
+    if(typeof base.min_length === 'number') {
+        assert.ok(6000 >= base.min_length  && base.min_length >= 0, "Invalid range: min length should be 0 <= x <= 6000" )
+    }
+    if(typeof base.max_length === 'number') {
+        assert.ok(6000 >= base.max_length  && base.max_length >= 1, "Invalid range: min length should be 1 <= x <= 6000" )
+    }
+    return base;
+}
 function baseOption<T extends ApplicationCommandOptionType>(
     type: T,
     name: string,
@@ -42,7 +79,10 @@ function baseOption<T extends ApplicationCommandOptionType>(
         ...other 
     }; 
 }
-
+/**
+  * Represents any option that is a choice
+  * ie: String, Number, or Integer option
+  */
 export function choice<T extends Choiceable>( 
    choiceable: BaseOption<T>,
    choices: Choice<T>[]
@@ -54,17 +94,17 @@ export function choice<T extends Choiceable>(
 }
 export function str<T extends ApplicationCommandOptionType.String>(
     name: Name, description: Description<T>,
-    validators: { validate: Validators[T] } = NoValidator,
+    validators: Validators[T]  = NoValidator,
     flags: Flags = Flags.None,
 ) {
-    return baseOption(ApplicationCommandOptionType.String, name, description, flags, validators?.validate);
+    return baseOption(ApplicationCommandOptionType.String, name, description, flags, validators);
 }
 
 
 export function num<T extends ApplicationCommandOptionType.Number>(
     name: Name,
     description: Description<T>,
-    validators: { validate: Validators[T] } = NoValidator,
+    validators: Validators[T] = NoValidator,
     flags: Flags = Flags.None,
 ) {
     return baseOption(
@@ -72,7 +112,7 @@ export function num<T extends ApplicationCommandOptionType.Number>(
         name,
         description,
         flags,
-        validators.validate
+        validators
     );
 }
 
@@ -94,7 +134,7 @@ export function attachment(
 export function int(
     name: Name,
     description: Description<ApplicationCommandOptionType.Integer>,
-    validators: { validate: Validators[ApplicationCommandOptionType.Number] } = NoValidator,
+    validators: Validators[ApplicationCommandOptionType.Integer] = NoValidator,
     flags: Flags= Flags.None
 
 ) {
@@ -103,7 +143,7 @@ export function int(
         name,
         description,
         flags,
-        validators.validate
+        validators
     );
 }
 

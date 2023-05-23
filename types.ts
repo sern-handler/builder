@@ -1,7 +1,7 @@
 import { APIApplicationCommandOptionBase, ApplicationCommandOptionType } from "discord-api-types/v10";
 
 
-export const NoValidator = { validate : {} };
+export const NoValidator = {};
 
 export type Brand<K, T> = K & { __brand: T }
 export type Name = Brand<string, 'Must be name'>
@@ -40,6 +40,7 @@ export interface Choice<T extends Choiceable> {
 
 export interface Validators {
     [ApplicationCommandOptionType.Number]: { min_value?: number; max_value?: number }
+    [ApplicationCommandOptionType.Integer]: { min_value?: number; max_value?: number }
     [ApplicationCommandOptionType.String]: { max_length?: number; min_length?: number },
 }
 

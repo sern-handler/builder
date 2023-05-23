@@ -23,7 +23,7 @@ yarn add @sern/builder
 - Supports all option types: String, number, attachment, integer, user, channel, and mentionable and subcommands
 - Validates data: checks names and description based on Discord Api regexes
 - 'Bottom up Builders': Each function is composable and individual, 
-     - Traditional builders has an intermediary invalid state, while pure functions yield 'valid state'
+     - Traditional builders contain an intermediary invalid state, while pure functions yield 'valid state'
      - This allows more flexible structures and substructures while being `declarative` and `less noisy`
 
 ## Usage

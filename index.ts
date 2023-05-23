@@ -1,5 +1,5 @@
 import * as assert from 'node:assert';
-import { BaseOption, Choice, Choiceable, Description, Name, NoValidator, Validators, Subcommand, SubcommandGroup } from './types';
+import { BaseOption, BranchNode, Choice, Choiceable, Description, Name, NoValidator, Validators } from './types';
 import { ApplicationCommandOptionType } from 'discord-api-types/v10'
 
 export enum Flags {
@@ -33,29 +33,27 @@ function baseOption<T extends ApplicationCommandOptionType>(
     description: string,
     flags: Flags,
     other: Record<string, unknown> = {}
-): BaseOption {
+): BaseOption<T> {
     return {
         type,
         name,
         description,
         ...mapFlags(flags),
         ...other 
-    }
+    }; 
 }
-export function identity(name: string) {
-    return { name, value: name };
-}
+
 export function choice<T extends Choiceable>( 
-   choiceable: BaseOption & { type: T },
+   choiceable: BaseOption<T>,
    choices: Choice<T>[]
-): BaseOption {
-    assert.notEqual(choiceable.autocomplete, true, "Cannot have autocomplete set to true with choices enabled")
-    choiceable.choice = choices;
-    return choiceable;
+) {
+    assert.ok(!choiceable.autocomplete, "Cannot have autocomplete set to true with choices enabled");
+    //@ts-ignore
+    choiceable.choices = choices;
+    return choiceable as BaseOption<T> & { choices: Choice<T>[] };
 }
 export function str<T extends ApplicationCommandOptionType.String>(
-    name: Name,
-    description: Description<T>,
+    name: Name, description: Description<T>,
     validators: { validate: Validators[T] } = NoValidator,
     flags: Flags = Flags.None,
 ) {
@@ -165,7 +163,7 @@ export function description<T extends ApplicationCommandOptionType>(args: string
 export function subcommand(
     name: Name,
     description: Description<ApplicationCommandOptionType.Subcommand>,
-    options: BaseOption[] = [],
+    options: BaseOption<ApplicationCommandOptionType>[] = [],
     flags: Flags = Flags.None
 ) {
    assert.ok(!(flags & (Flags.Autocomplete | Flags.Required)), "Cannot have autocomplete or required flag on subcommand");
@@ -175,13 +173,13 @@ export function subcommand(
         description,
         flags,
         { options }
-    ) as Subcommand;
+    ) as BranchNode<ApplicationCommandOptionType.Subcommand>
 }
 
 export function subcommandgroup(
     name: Name,
     description: Description<ApplicationCommandOptionType.Subcommand>,
-    options: (BaseOption & { type: ApplicationCommandOptionType.Subcommand })[],
+    options: BaseOption<ApplicationCommandOptionType.Subcommand>[],
     flags: Flags = Flags.None
 ) {
     assert.ok(!(flags & (Flags.Autocomplete | Flags.Required)), "Cannot have autocomplete or required flag on subcommandgroup");
@@ -192,10 +190,10 @@ export function subcommandgroup(
         description,
         flags,
         { options }
-    ) as SubcommandGroup;
+    ) as BranchNode<ApplicationCommandOptionType.SubcommandGroup>;
 }
 // for sern only
-export function autocomplete<T>(b: BaseOption, cb: (args: T) => PromiseLike<unknown> | unknown ) {
+export function autocomplete<T>(b: BaseOption<ApplicationCommandOptionType>, cb: (args: T) => PromiseLike<unknown> | unknown ) {
     if(!b.autocomplete) {
        b.autocomplete = true    
     }
@@ -209,4 +207,4 @@ export function autocomplete<T>(b: BaseOption, cb: (args: T) => PromiseLike<unkn
 
 }
 
-export { Choice, NoValidator, BaseOption, SubcommandGroup, Subcommand };
+export { Choice, NoValidator, BaseOption };

@@ -1,8 +1,16 @@
 import * as assert from 'node:assert/strict';
 
-import { str, name , description, Flags, choice, identity, subcommand, ApplicationCommandOptionType, subcommandgroup } from '../dist/index.js'
-
-
+import {
+    str,
+    name ,
+    description,
+    Flags,
+    choice,
+    identity,
+    subcommand,
+    subcommandgroup,
+    length 
+} from '../dist/index.js'
 
 assert.deepEqual(
     str(
@@ -21,14 +29,14 @@ assert.deepEqual(
     str(
         name("option"),
         description("a string option"),
-        { validate: { max_length: 10, min_length: 0 } }
+        length(1, 10)
     ),
     {
         name: "option",
         description: "a string option",
         type: 3,
         max_length: 10,
-        min_length: 0
+        min_length: 1
     }
 )
 
@@ -63,7 +71,7 @@ assert.deepEqual(
         description: "option",
         nsfw: true,
         required: true,
-        choice: [
+        choices: [
             { name: "option1", value: "option1" },
             { name: "option2", value: "option2" }
         ]
@@ -85,7 +93,7 @@ assert.deepEqual(
         description: "option",
         nsfw: true,
         required: true,
-        choice: [
+        choices: [
             { name: "option1", value: "option1" },
             { name: "option2", value: "option2" }
         ]
@@ -118,7 +126,7 @@ assert.deepStrictEqual(
     ],
    ),
    {
-    type: ApplicationCommandOptionType.Subcommand,
+    type: 1,
     name: "eat",
     description: "eat cheese",
     options: [
@@ -145,17 +153,17 @@ assert.deepStrictEqual(
     ],
    ),
    {
-    type: ApplicationCommandOptionType.SubcommandGroup,
+    type: 2,
     name: "eat",
     description: "eat cheese",
     options: [
      { 
         name: "eat",
         description: "eat cheese",
-        type: ApplicationCommandOptionType.Subcommand,
+        type: 1,
         options: [
-            str( name("gouda"), description("smoked gouda")),
-            str( name("parmesan"), description("yummy parm"))
+            { name: "gouda", description:"smoked gouda", type: 3 },
+            { name: "parmesan", description:"yummy parm", type: 3 }
         ]
      }
     ]

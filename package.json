@@ -6,7 +6,8 @@
   "module": "./dist/index.mjs",
   "scripts": {
     "bundle": "microbundle --target node", 
-    "watch": "microbundle watch"
+    "watch": "microbundle watch",
+    "test": "microbundle --target node && node ./test/index.test.mjs"
   },
   "exports": {
     "types": "./dist/index.d.ts",

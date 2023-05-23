@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import { BaseOption, BranchNode, Choice, Choiceable, Description, Name, NoValidator, Validators } from './types';
-import { ApplicationCommandOptionType } from 'discord-api-types/v10'
+import { ApplicationCommandOptionType, ChannelType, LocalizationMap } from 'discord-api-types/v10'
 
 /*
  * placeholder type for ranges
@@ -39,6 +39,20 @@ function mapFlags(flags: Flags): Record<string,unknown> {
 
     return output;
 }
+
+/**
+  * Function to provide localization options to options
+  */
+export function local<T extends ApplicationCommandOptionType>(
+    b: BaseOption<T>,
+    options : { name_localizations?: LocalizationMap|null; description_localizations?: LocalizationMap|null }
+) {
+    return {
+        ...b,
+        ...options
+    }
+}
+
 /**
   * declare range for number option
   */
@@ -66,6 +80,7 @@ export function length<T extends ApplicationCommandOptionType.String>(min?: numb
     }
     return base;
 }
+
 function baseOption<T extends ApplicationCommandOptionType>(
     type: T,
     name: string,
@@ -81,6 +96,13 @@ function baseOption<T extends ApplicationCommandOptionType>(
         ...other 
     }; 
 }
+/**
+  * For choices that have the same name and value
+  */
+export function identity(value: string) {
+    return { name: value, value }
+}
+
 /**
   * Represents any option that is a choice
   * ie: String, Number, or Integer option
@@ -100,7 +122,7 @@ export function choice<T extends Choiceable>(
   */
 export function str<T extends ApplicationCommandOptionType.String>(
     name: Name, description: Description<T>,
-    validators: Validators[T]  = NoValidator,
+    validators: Validators[T] = NoValidator,
     flags: Flags = Flags.None,
 ) {
     return baseOption(ApplicationCommandOptionType.String, name, description, flags, validators);
@@ -180,6 +202,7 @@ export function user(
 export function channel(
     name: Name,
     description: Description<ApplicationCommandOptionType.Channel>,
+    channel_types: ChannelType[] = [],
     flags: Flags= Flags.None
 
 ) {
@@ -187,7 +210,8 @@ export function channel(
         ApplicationCommandOptionType.Channel,
         name,
         description,
-        flags
+        flags,
+        { channel_types }
     );
 }
 /**

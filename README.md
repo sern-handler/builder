@@ -25,7 +25,7 @@ yarn add @sern/option
 
 ## Usage
 
-Here's an example of how to use `@sern/option` to create options for the Discord API:
+Here's an example of how to use `@sern/option` to create a subcommandgroup structure for the Discord API:
 
 ```javascript
 import { str, name, description, NoValidator, Flags, subcommandgroup, subcommand } from '@sern/option';

@@ -94,6 +94,10 @@ export function choice<T extends Choiceable>(
     choiceable.choices = choices;
     return choiceable as BaseOption<T> & { choices: Choice<T>[] };
 }
+
+/**
+  * Represents a string option
+  */
 export function str<T extends ApplicationCommandOptionType.String>(
     name: Name, description: Description<T>,
     validators: Validators[T]  = NoValidator,
@@ -102,7 +106,9 @@ export function str<T extends ApplicationCommandOptionType.String>(
     return baseOption(ApplicationCommandOptionType.String, name, description, flags, validators);
 }
 
-
+/**
+  * Represents a number option
+  */
 export function num<T extends ApplicationCommandOptionType.Number>(
     name: Name,
     description: Description<T>,
@@ -117,7 +123,9 @@ export function num<T extends ApplicationCommandOptionType.Number>(
         validators
     );
 }
-
+/**
+  * Represents a attachment option
+  */
 export function attachment(
     name: Name,
     description: Description<ApplicationCommandOptionType.Attachment>,
@@ -132,7 +140,9 @@ export function attachment(
     )
 }
 
-
+/**
+  * Represents a integer option
+  */
 export function int(
     name: Name,
     description: Description<ApplicationCommandOptionType.Integer>,
@@ -148,7 +158,9 @@ export function int(
         validators
     );
 }
-
+/**
+  * Represents a user option
+  */
 export function user(
     name: Name,
     description: Description<ApplicationCommandOptionType.User>,
@@ -162,7 +174,9 @@ export function user(
         flags
     );
 }
-
+/**
+  * Represents a channel option
+  */
 export function channel(
     name: Name,
     description: Description<ApplicationCommandOptionType.Channel>,
@@ -176,6 +190,9 @@ export function channel(
         flags
     );
 }
+/**
+  * Represents a mentionable option
+  */
 export function mentionable(
     name: Name,
     description: Description<ApplicationCommandOptionType.Mentionable>,
@@ -189,14 +206,20 @@ export function mentionable(
         flags
     );
 }
-
+/*
+ * wrapper function validating a string by Discord command / option name regex,
+ * https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-naming
+ */
 export function name(v: string): Name {
     //idk if unicode flag is set yet!
     assert.match(v, /^[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai}]{1,32}$/gu, v + " does not match a valid command name")
     return v as Name;
 }
 
-
+/*
+ * wrapper function validating a string description,
+ * the length must be 0 <= x <= 100
+ */
 export function description<T extends ApplicationCommandOptionType>(args: string) {
     assert.ok(0 <= args.length && args.length <= 100) 
     return args as unknown as Description<T>;

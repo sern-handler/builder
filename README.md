@@ -28,7 +28,7 @@ yarn add @sern/option
 Here's an example of how to use `@sern/option` to create a subcommandgroup structure for the Discord API:
 
 ```javascript
-import { str, name, description, NoValidator, Flags, subcommandgroup, subcommand } from '@sern/option';
+import { str, name, description, NoValidator, Flags, subcommandgroup, subcommand, length, _ } from '@sern/option';
 
 const tree = subcommandgroup(
         name('group'),
@@ -41,7 +41,7 @@ const tree = subcommandgroup(
                  str(
                   name("choose"),
                   description("pick one of the following"),
-                  NoValidator,
+                  length(_, 10),
                   Flags.Required | Flags.Autocomplete),
                 ]
             )]
